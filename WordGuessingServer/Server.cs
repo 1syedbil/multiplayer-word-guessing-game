@@ -6,17 +6,19 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Net;
 using System.Net.Sockets;
+using System.Net.NetworkInformation;
 
 namespace WordGuessingServer
 {
     internal class Server
     {
-        private Int32 port = 20000;
+        private Int32 port = 60000;
 
         public void StartGameServer()
         {
             TcpListener gameServer = null;
             string address = RetrieveAddress();
+            Console.WriteLine(address);
             IPAddress ip = IPAddress.Parse(address);
 
             try
@@ -66,19 +68,26 @@ namespace WordGuessingServer
         
         private string RetrieveAddress()
         {
-            string address = null;
-            string host = Dns.GetHostName();
-            IPHostEntry entry = Dns.GetHostEntry(host);
+            string ipAddress = null;
 
-            for (int i = 0; 0 < 6; i++)
+            NetworkInterface[] addresses = NetworkInterface.GetAllNetworkInterfaces();
+
+            foreach (NetworkInterface address in addresses)
             {
-                address = entry.AddressList[i].ToString();
-
-                if (address.Contains('.'))
+                if (address.Name == "Wi-Fi")
                 {
-                    return address;
+                    foreach (UnicastIPAddressInformation ipInfo in address.GetIPProperties().UnicastAddresses)
+                    {
+                        if (ipInfo.Address.AddressFamily == AddressFamily.InterNetwork)
+                        {
+                            ipAddress = ipInfo.Address.ToString();
+                            return ipAddress;
+                        }
+                    }
                 }
             }
+
+            return ipAddress;
         }
 
     }
