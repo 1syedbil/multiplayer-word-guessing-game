@@ -70,9 +70,15 @@ namespace WordGuessingServer
             string host = Dns.GetHostName();
             IPHostEntry entry = Dns.GetHostEntry(host);
 
-            address = entry.AddressList[3].ToString();
+            for (int i = 0; 0 < 6; i++)
+            {
+                address = entry.AddressList[i].ToString();
 
-            return address;
+                if (address.Contains('.'))
+                {
+                    return address;
+                }
+            }
         }
 
     }
