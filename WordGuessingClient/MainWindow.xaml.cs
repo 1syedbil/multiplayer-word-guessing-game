@@ -24,5 +24,12 @@ namespace WordGuessingClient
         {
             InitializeComponent();
         }
+
+        private void submitBtn_Click(object sender, RoutedEventArgs e)
+        {
+            Client client = new Client();
+
+            serverMessage.Text = client.RunGameClient(serverAddress.Text, serverPort.Text, playerName.Text);
+        }
     }
 }

@@ -10,6 +10,11 @@ namespace WordGuessingServer
     {
         static void Main(string[] args)
         {
+            Server server = new Server();
+            server.StartGameServer();
+
+            Console.WriteLine("Press enter to end:");
+            Console.ReadLine();
         }
     }
 }
