@@ -68,22 +68,7 @@ namespace WordGuessingServer
 
                 string gameData = string.Empty;
 
-                gameData = InitializeGameData(gameData);
-
-                this.gameData = gameData.Split(',');
-
-                int count = 0;
-
-                for (int i = 0; i < this.gameData.Length; i++)
-                {
-                    if (this.gameData[i].Length >= 80 || Int32.TryParse(this.gameData[i], out int j) || this.gameData[i] == string.Empty)
-                    {
-                        continue;
-                    }
-
-                    correctWords[count] = this.gameData[i];
-                    count++;
-                }
+                gameData = InitializeGame(gameData, this.gameData, correctWords);
 
                 serverMessage = Encoding.ASCII.GetBytes(gameData);
 
@@ -95,6 +80,28 @@ namespace WordGuessingServer
             }
 
             client.Close();
+        }
+
+        private string InitializeGame(string data, string[] gameData, string[] correctWords)
+        {
+            data = InitializeGameData(data);
+
+            this.gameData = data.Split(',');
+
+            int count = 0;
+
+            for (int i = 0; i < this.gameData.Length; i++)
+            {
+                if (this.gameData[i].Length >= 80 || Int32.TryParse(this.gameData[i], out int j) || this.gameData[i] == string.Empty)
+                {
+                    continue;
+                }
+
+                correctWords[count] = this.gameData[i];
+                count++;
+            }
+
+            return data;
         }
 
         private string InitializeGameData(string gameData)
