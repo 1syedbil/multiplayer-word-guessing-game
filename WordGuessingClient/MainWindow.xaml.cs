@@ -20,6 +20,8 @@ namespace WordGuessingClient
     /// </summary>
     public partial class MainWindow : Window
     {
+        private string uniqueID = string.Empty;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -29,7 +31,12 @@ namespace WordGuessingClient
         {
             Client client = new Client();
 
-            serverMessage.Text = client.RunGameClient(serverAddress.Text, serverPort.Text, playerName.Text);
+            uniqueID = Guid.NewGuid().ToString();
+
+            string[] gameData = client.RunGameClient(serverAddress.Text, serverPort.Text, playerName.Text, uniqueID);
+
+            wordBank.Content = "Word Bank: " + gameData[0];
+            numOfWords.Content = "Words Remaining: " + gameData[1];
         }
     }
 }

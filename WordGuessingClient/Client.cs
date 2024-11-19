@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -11,43 +12,49 @@ namespace WordGuessingClient
     internal class Client
     {
 
-        public string RunGameClient(string ip, string port, string name)
+        public string[] RunGameClient(string ip, string port, string name, string uniqueID)
         {
             Int32.TryParse(port, out int serverPort);
 
-            return ConnectToGameServer(ip, serverPort, name);
+            return ConnectToGameServer(ip, serverPort, name, uniqueID);
         }
 
-        private string ConnectToGameServer(string ip, int port, string name)
+        private string[] ConnectToGameServer(string ip, int port, string name, string uniqueID)
         {
             try
             {
                 TcpClient player = new TcpClient(ip, port);
 
-                Byte[] userName = Encoding.ASCII.GetBytes(name);
+                string info = uniqueID + "," + name;
+
+                byte[] userInfo = Encoding.ASCII.GetBytes(info); 
 
                 NetworkStream stream = player.GetStream();
 
-                stream.Write(userName, 0, userName.Length);
+                stream.Write(userInfo, 0, userInfo.Length);
 
-                Byte[] serverResponse = new Byte[100];
+                byte[] serverResponse = new byte[100];
 
                 stream.Read(serverResponse, 0, serverResponse.Length);
 
                 string serverMessage = Encoding.ASCII.GetString(serverResponse);
 
+                string[] gameInfo = serverMessage.Split(',');
+
                 stream.Close();
                 player.Close();
 
-                return serverMessage;
+                return gameInfo;
             }
             catch (ArgumentNullException e)
             {
-                return e.ToString();
+                Console.WriteLine(e.Message);
+                return null;
             }
             catch (SocketException e)
             {
-                return e.ToString();
+                Console.WriteLine(e.Message);
+                return null;
             }
         }
 

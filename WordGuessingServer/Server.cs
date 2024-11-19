@@ -7,18 +7,21 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Net.Sockets;
 using System.Net.NetworkInformation;
+using System.IO;
 
 namespace WordGuessingServer
 {
     internal class Server
     {
         private Int32 port = 60000;
+        private Dictionary<string, string> players = new Dictionary<string, string>();
+        private string[] gameData = new string[100];
+        private string[] correctWords = new string[100];
 
         public void StartGameServer()
         {
             TcpListener gameServer = null;
             string address = RetrieveAddress();
-            Console.WriteLine(address);
             IPAddress ip = IPAddress.Parse(address);
 
             try
@@ -46,24 +49,85 @@ namespace WordGuessingServer
 
         private void RunGameLogic(TcpClient client)
         {
-            Byte[] dataBuffer = new Byte[100];
-            string playerName = null;
-            string message = null;
-            Byte[] serverMessage = new Byte[100];
+            byte[] clientData = new byte[100];
+            string playerMessage = null;
+            string[] playerInfo = null;
+            byte[] serverMessage = new byte[100];
 
             NetworkStream stream = client.GetStream();
 
-            stream.Read(dataBuffer, 0, dataBuffer.Length);
+            stream.Read(clientData, 0, clientData.Length);
 
-            playerName = Encoding.ASCII.GetString(dataBuffer);
+            playerMessage = Encoding.ASCII.GetString(clientData);
 
-            message = "Hello " + playerName;
+            playerInfo = playerMessage.Split(new char[] {','});
 
-            serverMessage = Encoding.ASCII.GetBytes(message);
+            if (CheckPlayerInfo(playerInfo) == 0)
+            {
+                players.Add(playerInfo[0], playerInfo[1]);
 
-            stream.Write(serverMessage, 0, serverMessage.Length);
+                string gameData = string.Empty;
+
+                gameData = InitializeGameData(gameData);
+
+                this.gameData = gameData.Split(',');
+
+                int count = 0;
+
+                for (int i = 0; i < this.gameData.Length; i++)
+                {
+                    if (this.gameData[i].Length >= 80 || Int32.TryParse(this.gameData[i], out int j) || this.gameData[i] == string.Empty)
+                    {
+                        continue;
+                    }
+
+                    correctWords[count] = this.gameData[i];
+                    count++;
+                }
+
+                serverMessage = Encoding.ASCII.GetBytes(gameData);
+
+                stream.Write(serverMessage, 0, serverMessage.Length);
+            }
+            else if (CheckPlayerInfo(playerInfo) == 1)
+            {
+
+            }
 
             client.Close();
+        }
+
+        private string InitializeGameData(string gameData)
+        {
+            string[] a = File.ReadAllLines("WordBanks/wordBank1.txt");
+
+            foreach (string data in a)
+            {
+                gameData += data;
+                gameData += ',';
+            }
+
+            return gameData;
+        }
+
+        private int CheckPlayerInfo(string[] playerInfo)
+        {
+            int playerExists = 0;
+            
+            if (players == null)
+            {
+                playerExists = 0;
+            }
+            else if (!players.ContainsKey(playerInfo[0]))
+            {
+                playerExists = 0;
+            }
+            else if (players.ContainsKey(playerInfo[0]))
+            {
+                playerExists = 1;
+            }
+
+            return playerExists;
         }
         
         private string RetrieveAddress()
@@ -74,7 +138,7 @@ namespace WordGuessingServer
 
             foreach (NetworkInterface address in addresses)
             {
-                if (address.Name == "Wi-Fi")
+                if (address.Name == "Wi-Fi" || address.Name == "Ethernet")
                 {
                     foreach (UnicastIPAddressInformation ipInfo in address.GetIPProperties().UnicastAddresses)
                     {
