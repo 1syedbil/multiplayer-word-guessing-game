@@ -21,6 +21,7 @@ namespace WordGuessingClient
     public partial class MainWindow : Window
     {
         private string uniqueID = string.Empty;
+        private Client client = new Client();
 
         public MainWindow()
         {
@@ -29,14 +30,19 @@ namespace WordGuessingClient
 
         private void submitBtn_Click(object sender, RoutedEventArgs e)
         {
-            Client client = new Client();
-
             uniqueID = Guid.NewGuid().ToString();
 
             string[] gameData = client.RunGameClient(serverAddress.Text, serverPort.Text, playerName.Text, uniqueID);
 
             wordBank.Content = "Word Bank: " + gameData[0];
             numOfWords.Content = "Words Remaining: " + gameData[1];
+        }
+
+        private void submitGuessBtn_Click(object sender, RoutedEventArgs e)
+        {
+            string gameData = client.RunGameClient(serverAddress.Text, serverPort.Text, playerName.Text, uniqueID, userGuess.Text);
+
+            numOfWords.Content = "Words Remaining: " + gameData;
         }
     }
 }

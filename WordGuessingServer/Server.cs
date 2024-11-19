@@ -76,10 +76,40 @@ namespace WordGuessingServer
             }
             else if (CheckPlayerInfo(playerInfo) == 1)
             {
+                string newGameData = CheckGuess(playerInfo);
 
+                serverMessage = Encoding.ASCII.GetBytes(newGameData); 
+
+                stream.Write(serverMessage, 0, serverMessage.Length);
             }
 
             client.Close();
+        }
+
+        private string CheckGuess(string[] data)
+        {
+            if (correctWords.AsQueryable().Contains(data[2].Trim('\0')))
+            {
+                for (int i = 0; i < correctWords.Length; i++)
+                {
+                    if (correctWords[i] == data[2].Trim('\0'))
+                    {
+                        correctWords[i] = string.Empty;
+                        break;
+                    }
+                }
+
+                Int32.TryParse(gameData[1], out int j);
+                j--;
+
+                gameData[1] = j.ToString();
+
+                return gameData[1];
+            }
+            else
+            {
+                return gameData[1];
+            }
         }
 
         private string InitializeGame(string data, string[] gameData, string[] correctWords)

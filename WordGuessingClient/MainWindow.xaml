@@ -14,10 +14,10 @@
         <TextBox x:Name="serverAddress" HorizontalAlignment="Left" Margin="180,91,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
         <TextBox x:Name="serverPort" HorizontalAlignment="Left" Margin="180,122,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
         <Button x:Name="submitBtn" Content="Submit" HorizontalAlignment="Left" Margin="260,160,0,0" VerticalAlignment="Top" Click="submitBtn_Click"/>
-        <TextBox x:Name="serverMessage" HorizontalAlignment="Left" Margin="453,60,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="299" Height="239"/>
+        <TextBox x:Name="userGuess" HorizontalAlignment="Left" Margin="453,60,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="299" Height="239"/>
         <Label x:Name="wordBank" Content="Word Bank:" HorizontalAlignment="Left" Margin="180,18,0,0" VerticalAlignment="Top" Width="572"/>
         <Label x:Name="numOfWords" Content="Words Remaining:" HorizontalAlignment="Left" Margin="453,339,0,0" VerticalAlignment="Top" Width="163"/>
-        <Button x:Name="submitGuessBtn" Content="Submit Guess" HorizontalAlignment="Left" Margin="453,314,0,0" VerticalAlignment="Top"/>
+        <Button x:Name="submitGuessBtn" Content="Submit Guess" HorizontalAlignment="Left" Margin="453,314,0,0" VerticalAlignment="Top" Click="submitGuessBtn_Click"/>
 
     </Grid>
 </Window>
