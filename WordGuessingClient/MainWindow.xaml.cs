@@ -48,6 +48,12 @@ namespace WordGuessingClient
         {
             string gameData = client.RunGameClient(serverAddress.Text, serverPort.Text, playerName.Text, uniqueID, userGuess.Text, timeLimitValue.Text);
 
+            if (gameData == "Game Finished")
+            {
+                MessageBox.Show("Game Finished. You won!");
+                return;
+            }
+            
             numOfWords.Text = gameData;
         }
 
@@ -71,7 +77,7 @@ namespace WordGuessingClient
                          timer.Stop();
                          if (client.RequestTimerStatus(serverAddress.Text, serverPort.Text, uniqueID) == "Game Finished")
                          {
-                             MessageBox.Show("Game Finished");
+                             MessageBox.Show("Game Finished. Time's up!");
                          }
                      }
                     time = time.Add(TimeSpan.FromSeconds(-1));

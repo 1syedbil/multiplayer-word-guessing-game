@@ -132,6 +132,11 @@ namespace WordGuessingServer
                 Int32.TryParse(remainingWords[playerInfo[0]], out int j);
                 j--;
 
+                if (j == 0)
+                {
+                    return "Game Finished";
+                }
+
                 remainingWords[playerInfo[0]] = j.ToString();
 
                 return remainingWords[playerInfo[0]];
@@ -172,7 +177,7 @@ namespace WordGuessingServer
 
         private string InitializeGameData(string gameData)
         {
-            string[] a = File.ReadAllLines("WordBanks/wordBank1.txt");
+            string[] a = File.ReadAllLines("WordBanks/wordBank2.txt");
 
             foreach (string data in a)
             {
