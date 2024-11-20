@@ -32,7 +32,7 @@ namespace WordGuessingClient
         {
             uniqueID = Guid.NewGuid().ToString();
 
-            string[] gameData = client.RunGameClient(serverAddress.Text, serverPort.Text, playerName.Text, uniqueID);
+            string[] gameData = client.RunGameClient(serverAddress.Text, serverPort.Text, playerName.Text, uniqueID, timeLimitValue.Text);
 
             wordBank.Content = "Word Bank: " + gameData[0];
             numOfWords.Content = "Words Remaining: " + gameData[1];
@@ -40,9 +40,14 @@ namespace WordGuessingClient
 
         private void submitGuessBtn_Click(object sender, RoutedEventArgs e)
         {
-            string gameData = client.RunGameClient(serverAddress.Text, serverPort.Text, playerName.Text, uniqueID, userGuess.Text);
+            string gameData = client.RunGameClient(serverAddress.Text, serverPort.Text, playerName.Text, uniqueID, userGuess.Text, timeLimitValue.Text);
 
             numOfWords.Content = "Words Remaining: " + gameData;
+        }
+
+        private void timeLimit_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            timeLimitValue.Text = Math.Round(timeLimit.Value, 1).ToString();
         }
     }
 }

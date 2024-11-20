@@ -59,8 +59,9 @@ namespace WordGuessingServer
             stream.Read(clientData, 0, clientData.Length);
 
             playerMessage = Encoding.ASCII.GetString(clientData);
+            Console.WriteLine(playerMessage);
 
-            playerInfo = playerMessage.Split(new char[] {','});
+            playerInfo = playerMessage.Split(',');
 
             if (CheckPlayerInfo(playerInfo) == 0)
             {
@@ -68,7 +69,7 @@ namespace WordGuessingServer
 
                 string gameData = string.Empty;
 
-                gameData = InitializeGame(gameData, this.gameData, correctWords);
+                gameData = InitializeGame(gameData);
 
                 serverMessage = Encoding.ASCII.GetBytes(gameData);
 
@@ -88,11 +89,11 @@ namespace WordGuessingServer
 
         private string CheckGuess(string[] data)
         {
-            if (correctWords.AsQueryable().Contains(data[2].Trim('\0')))
+            if (correctWords.AsQueryable().Contains(data[3].Trim('\0')))
             {
                 for (int i = 0; i < correctWords.Length; i++)
                 {
-                    if (correctWords[i] == data[2].Trim('\0'))
+                    if (correctWords[i] == data[3].Trim('\0'))
                     {
                         correctWords[i] = string.Empty;
                         break;
@@ -112,22 +113,22 @@ namespace WordGuessingServer
             }
         }
 
-        private string InitializeGame(string data, string[] gameData, string[] correctWords)
+        private string InitializeGame(string data)
         {
             data = InitializeGameData(data);
 
-            this.gameData = data.Split(',');
+            gameData = data.Split(',');
 
             int count = 0;
 
-            for (int i = 0; i < this.gameData.Length; i++)
+            for (int i = 0; i < gameData.Length; i++)
             {
-                if (this.gameData[i].Length >= 80 || Int32.TryParse(this.gameData[i], out int j) || this.gameData[i] == string.Empty)
+                if (gameData[i].Length >= 80 || Int32.TryParse(gameData[i], out int j) || gameData[i] == string.Empty)
                 {
                     continue;
                 }
 
-                correctWords[count] = this.gameData[i];
+                correctWords[count] = gameData[i];
                 count++;
             }
 

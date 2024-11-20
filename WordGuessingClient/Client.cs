@@ -12,27 +12,27 @@ namespace WordGuessingClient
     internal class Client
     {
 
-        public string[] RunGameClient(string ip, string port, string name, string uniqueID)
+        public string[] RunGameClient(string ip, string port, string name, string uniqueID, string timeLimit)
         {
             Int32.TryParse(port, out int serverPort);
 
-            return ConnectToGameServer(ip, serverPort, name, uniqueID);
+            return ConnectToGameServer(ip, serverPort, name, uniqueID, timeLimit);
         }
 
-        public string RunGameClient(string ip, string port, string name, string uniqueID, string guess)
+        public string RunGameClient(string ip, string port, string name, string uniqueID, string guess, string timeLimit)
         {
             Int32.TryParse(port, out int serverPort);
 
-            return ConnectToGameServer(ip, serverPort, name, uniqueID, guess);
+            return ConnectToGameServer(ip, serverPort, name, uniqueID, guess, timeLimit);
         }
 
-        private string ConnectToGameServer(string ip, int port, string name, string uniqueID, string guess)
+        private string ConnectToGameServer(string ip, int port, string name, string uniqueID, string guess, string timeLimit)
         {
             try
             {
                 TcpClient player = new TcpClient(ip, port);
 
-                string info = uniqueID + "," + name + "," + guess;
+                string info = uniqueID + "," + name + "," + timeLimit + "," + guess;
 
                 byte[] userInfo = Encoding.ASCII.GetBytes(info);
 
@@ -63,13 +63,13 @@ namespace WordGuessingClient
             }
         }
 
-        private string[] ConnectToGameServer(string ip, int port, string name, string uniqueID)
+        private string[] ConnectToGameServer(string ip, int port, string name, string uniqueID, string timeLimit)
         {
             try
             {
                 TcpClient player = new TcpClient(ip, port);
 
-                string info = uniqueID + "," + name;
+                string info = uniqueID + "," + name + "," + timeLimit;
 
                 byte[] userInfo = Encoding.ASCII.GetBytes(info); 
 
