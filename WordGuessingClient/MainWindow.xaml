@@ -15,11 +15,15 @@
         <TextBox x:Name="serverPort" HorizontalAlignment="Left" Margin="180,122,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
         <Button x:Name="submitBtn" Content="Submit" HorizontalAlignment="Left" Margin="258,197,0,0" VerticalAlignment="Top" Click="submitBtn_Click"/>
         <TextBox x:Name="userGuess" HorizontalAlignment="Left" Margin="453,60,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="299" Height="239"/>
-        <Label x:Name="wordBank" Content="Word Bank:" HorizontalAlignment="Left" Margin="180,370,0,0" VerticalAlignment="Top" Width="572"/>
-        <Label x:Name="numOfWords" Content="Words Remaining:" HorizontalAlignment="Left" Margin="453,339,0,0" VerticalAlignment="Top" Width="163"/>
+        <Label Content="Word Bank:" HorizontalAlignment="Left" Margin="180,370,0,0" VerticalAlignment="Top" Width="75"/>
+        <Label Content="Words Remaining:" HorizontalAlignment="Left" Margin="453,339,0,0" VerticalAlignment="Top" Width="111"/>
         <Button x:Name="submitGuessBtn" Content="Submit Guess" HorizontalAlignment="Left" Margin="453,314,0,0" VerticalAlignment="Top" Click="submitGuessBtn_Click"/>
         <Slider x:Name="timeLimit" HorizontalAlignment="Left" Margin="180,162,0,0" VerticalAlignment="Top" Width="127" ValueChanged="timeLimit_ValueChanged"/>
         <TextBlock x:Name="timeLimitValue" HorizontalAlignment="Left" Margin="312,163,0,0" TextWrapping="Wrap" VerticalAlignment="Top"><Run Text="0"/><LineBreak/><Run/></TextBlock>
         <Label Content="Time Limit (minutes):" HorizontalAlignment="Left" Margin="45,158,0,0" VerticalAlignment="Top"/>
+        <TextBlock x:Name="wordBank" HorizontalAlignment="Left" Margin="255,375,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="497"/>
+        <TextBlock x:Name="numOfWords" HorizontalAlignment="Left" Margin="564,344,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="58"/>
+        <Label Content="REMAINING TIME:" HorizontalAlignment="Left" Margin="453,29,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.074,0.131"/>
+        <TextBlock x:Name="tbTime" HorizontalAlignment="Left" Margin="564,34,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="188"/>
     </Grid>
 </Window>

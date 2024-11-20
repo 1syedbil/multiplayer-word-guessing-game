@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace WordGuessingClient
 {
@@ -22,6 +23,8 @@ namespace WordGuessingClient
     {
         private string uniqueID = string.Empty;
         private Client client = new Client();
+        DispatcherTimer timer;
+        TimeSpan time;
 
         public MainWindow()
         {
@@ -34,20 +37,40 @@ namespace WordGuessingClient
 
             string[] gameData = client.RunGameClient(serverAddress.Text, serverPort.Text, playerName.Text, uniqueID, timeLimitValue.Text);
 
-            wordBank.Content = "Word Bank: " + gameData[0];
-            numOfWords.Content = "Words Remaining: " + gameData[1];
+            wordBank.Text = gameData[0];
+            numOfWords.Text = gameData[1];
+
+            StartTimer();
+            submitBtn.Visibility = Visibility.Collapsed;
         }
 
         private void submitGuessBtn_Click(object sender, RoutedEventArgs e)
         {
             string gameData = client.RunGameClient(serverAddress.Text, serverPort.Text, playerName.Text, uniqueID, userGuess.Text, timeLimitValue.Text);
 
-            numOfWords.Content = "Words Remaining: " + gameData;
+            numOfWords.Text = gameData;
         }
 
         private void timeLimit_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             timeLimitValue.Text = Math.Round(timeLimit.Value, 1).ToString();
+        }
+
+        private void StartTimer()
+        {
+            //the code for this method is from https://stackoverflow.com/questions/16748371/how-to-make-a-wpf-countdown-timer 
+            InitializeComponent();
+
+            time = TimeSpan.FromMinutes(Math.Round(timeLimit.Value, 1));
+
+            timer = new DispatcherTimer(new TimeSpan(0, 0, 1), DispatcherPriority.Normal, delegate
+                 {
+                    tbTime.Text = time.ToString("c");
+                    if (time == TimeSpan.Zero) timer.Stop();
+                    time = time.Add(TimeSpan.FromSeconds(-1));
+                 }, Application.Current.Dispatcher);
+
+            timer.Start();
         }
     }
 }

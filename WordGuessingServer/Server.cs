@@ -15,6 +15,8 @@ namespace WordGuessingServer
     {
         private Int32 port = 60000;
         private Dictionary<string, string> players = new Dictionary<string, string>();
+        private Dictionary<string, string> a = new Dictionary<string, string>();
+        private Dictionary<string, string[]> b = new Dictionary<string, string[]>();
         private string[] gameData = new string[100];
         private string[] correctWords = new string[100];
 
@@ -69,7 +71,7 @@ namespace WordGuessingServer
 
                 string gameData = string.Empty;
 
-                gameData = InitializeGame(gameData);
+                gameData = InitializeGame(gameData, playerInfo);
 
                 serverMessage = Encoding.ASCII.GetBytes(gameData);
 
@@ -87,37 +89,38 @@ namespace WordGuessingServer
             client.Close();
         }
 
-        private string CheckGuess(string[] data)
+        private string CheckGuess(string[] playerInfo)
         {
-            if (correctWords.AsQueryable().Contains(data[3].Trim('\0')))
+            if (b[playerInfo[0]].AsQueryable().Contains(playerInfo[3].Trim('\0')))
             {
                 for (int i = 0; i < correctWords.Length; i++)
                 {
-                    if (correctWords[i] == data[3].Trim('\0'))
+                    if (b[playerInfo[0]][i] == playerInfo[3].Trim('\0'))
                     {
-                        correctWords[i] = string.Empty;
+                        b[playerInfo[0]][i] = string.Empty;
                         break;
                     }
                 }
 
-                Int32.TryParse(gameData[1], out int j);
+                Int32.TryParse(a[playerInfo[0]], out int j);
                 j--;
 
-                gameData[1] = j.ToString();
+                a[playerInfo[0]] = j.ToString();
 
-                return gameData[1];
+                return a[playerInfo[0]];
             }
             else
             {
-                return gameData[1];
+                return a[playerInfo[0]];
             }
         }
 
-        private string InitializeGame(string data)
+        private string InitializeGame(string data, string[] playerInfo)
         {
             data = InitializeGameData(data);
 
             gameData = data.Split(',');
+            a.Add(playerInfo[0], gameData[1]);
 
             int count = 0;
 
@@ -131,6 +134,8 @@ namespace WordGuessingServer
                 correctWords[count] = gameData[i];
                 count++;
             }
+
+            b.Add(playerInfo[0], correctWords);
 
             return data;
         }
