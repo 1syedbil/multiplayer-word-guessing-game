@@ -58,7 +58,7 @@ namespace WordGuessingClient
 
         private void StartTimer()
         {
-            //the code for this method is from https://stackoverflow.com/questions/16748371/how-to-make-a-wpf-countdown-timer 
+            //the code for this method related to the timer is from https://stackoverflow.com/questions/16748371/how-to-make-a-wpf-countdown-timer 
             InitializeComponent();
 
             time = TimeSpan.FromMinutes(Math.Round(timeLimit.Value, 1));
@@ -66,7 +66,14 @@ namespace WordGuessingClient
             timer = new DispatcherTimer(new TimeSpan(0, 0, 1), DispatcherPriority.Normal, delegate
                  {
                     tbTime.Text = time.ToString("c");
-                    if (time == TimeSpan.Zero) timer.Stop();
+                     if (time == TimeSpan.Zero) 
+                     { 
+                         timer.Stop();
+                         if (client.RequestTimerStatus(serverAddress.Text, serverPort.Text, uniqueID) == "Game Finished")
+                         {
+                             MessageBox.Show("Game Finished");
+                         }
+                     }
                     time = time.Add(TimeSpan.FromSeconds(-1));
                  }, Application.Current.Dispatcher);
 

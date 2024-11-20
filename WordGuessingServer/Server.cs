@@ -19,6 +19,7 @@ namespace WordGuessingServer
         private Dictionary<string, string> remainingWords = new Dictionary<string, string>();
         private Dictionary<string, string[]> correctWords = new Dictionary<string, string[]>();
         private Dictionary<string, double> timeLimits = new Dictionary<string, double>();
+        private Dictionary<string, bool> statusOfGames = new Dictionary<string, bool>();
         private string[] gameData = new string[100];
 
         public void StartGameServer()
@@ -50,7 +51,7 @@ namespace WordGuessingServer
             }
         }
 
-        private void RunGameLogic(TcpClient client)
+        private async void RunGameLogic(TcpClient client)
         {
             byte[] clientData = new byte[100];
             string playerMessage = null;
@@ -61,7 +62,7 @@ namespace WordGuessingServer
 
             stream.Read(clientData, 0, clientData.Length);
 
-            playerMessage = Encoding.ASCII.GetString(clientData);
+            playerMessage = Encoding.ASCII.GetString(clientData).Trim('\0'); ;
             Console.WriteLine(playerMessage);
 
             playerInfo = playerMessage.Split(',');
@@ -74,15 +75,27 @@ namespace WordGuessingServer
 
                 gameData = InitializeGame(gameData, playerInfo);
 
+                Task countdown = Countdown(timeLimits[playerInfo[0]], playerInfo);
+
                 serverMessage = Encoding.ASCII.GetBytes(gameData);
 
                 stream.Write(serverMessage, 0, serverMessage.Length);
 
-                Countdown(timeLimits[playerInfo[0]], stream);
+                await countdown;
             }
             else if (CheckPlayerInfo(playerInfo) == 1)
             {
-                string newGameData = CheckGuess(playerInfo);
+                string newGameData = string.Empty;
+
+                if (statusOfGames[playerInfo[0]] == false)
+                {
+                    newGameData = "Game Finished";
+                    Console.WriteLine(newGameData);
+                }
+                else
+                {
+                    newGameData = CheckGuess(playerInfo);
+                }
 
                 serverMessage = Encoding.ASCII.GetBytes(newGameData); 
 
@@ -92,12 +105,15 @@ namespace WordGuessingServer
             client.Close();
         }
 
-        private async Task Countdown(double timeMinutes, NetworkStream stream)
+        private async Task Countdown(double timeMinutes, string[] playerInfo)
         {
-            int timeMilliseconds = (int)(timeMinutes * 60000) + 1000;
+            int timeMilliseconds = (int)(timeMinutes * 60000);
+
             await Task.Delay(timeMilliseconds);
 
             Console.WriteLine("Timer finished.");
+
+            statusOfGames[playerInfo[0]] = false;
         }
 
         private string CheckGuess(string[] playerInfo)
@@ -134,6 +150,7 @@ namespace WordGuessingServer
             remainingWords.Add(playerInfo[0], gameData[1]);
             Double.TryParse(playerInfo[2], out double time);
             timeLimits.Add(playerInfo[0], time);
+            statusOfGames.Add(playerInfo[0], true);
 
             int count = 0;
 
