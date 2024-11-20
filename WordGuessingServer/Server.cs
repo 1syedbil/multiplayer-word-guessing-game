@@ -14,15 +14,16 @@ namespace WordGuessingServer
     internal class Server
     {
         private Int32 port = 60000;
+        private TcpListener gameServer = null;
         private Dictionary<string, string> players = new Dictionary<string, string>();
-        private Dictionary<string, string> a = new Dictionary<string, string>();
-        private Dictionary<string, string[]> b = new Dictionary<string, string[]>();
+        private Dictionary<string, string> remainingWords = new Dictionary<string, string>();
+        private Dictionary<string, string[]> correctWords = new Dictionary<string, string[]>();
+        private Dictionary<string, double> timeLimits = new Dictionary<string, double>();
         private string[] gameData = new string[100];
-        private string[] correctWords = new string[100];
 
         public void StartGameServer()
         {
-            TcpListener gameServer = null;
+            gameServer = null;
             string address = RetrieveAddress();
             IPAddress ip = IPAddress.Parse(address);
 
@@ -76,6 +77,8 @@ namespace WordGuessingServer
                 serverMessage = Encoding.ASCII.GetBytes(gameData);
 
                 stream.Write(serverMessage, 0, serverMessage.Length);
+
+                Countdown(timeLimits[playerInfo[0]], stream);
             }
             else if (CheckPlayerInfo(playerInfo) == 1)
             {
@@ -89,38 +92,48 @@ namespace WordGuessingServer
             client.Close();
         }
 
+        private async Task Countdown(double timeMinutes, NetworkStream stream)
+        {
+            int timeMilliseconds = (int)(timeMinutes * 60000) + 1000;
+            await Task.Delay(timeMilliseconds);
+
+            Console.WriteLine("Timer finished.");
+        }
+
         private string CheckGuess(string[] playerInfo)
         {
-            if (b[playerInfo[0]].AsQueryable().Contains(playerInfo[3].Trim('\0')))
+            if (correctWords[playerInfo[0]].AsQueryable().Contains(playerInfo[3].Trim('\0')))
             {
-                for (int i = 0; i < correctWords.Length; i++)
+                for (int i = 0; i < correctWords[playerInfo[0]].Length; i++)
                 {
-                    if (b[playerInfo[0]][i] == playerInfo[3].Trim('\0'))
+                    if (correctWords[playerInfo[0]][i] == playerInfo[3].Trim('\0'))
                     {
-                        b[playerInfo[0]][i] = string.Empty;
+                        correctWords[playerInfo[0]][i] = string.Empty;
                         break;
                     }
                 }
 
-                Int32.TryParse(a[playerInfo[0]], out int j);
+                Int32.TryParse(remainingWords[playerInfo[0]], out int j);
                 j--;
 
-                a[playerInfo[0]] = j.ToString();
+                remainingWords[playerInfo[0]] = j.ToString();
 
-                return a[playerInfo[0]];
+                return remainingWords[playerInfo[0]];
             }
             else
             {
-                return a[playerInfo[0]];
+                return remainingWords[playerInfo[0]];
             }
         }
 
         private string InitializeGame(string data, string[] playerInfo)
         {
+            string[] words = new string[100];
             data = InitializeGameData(data);
-
             gameData = data.Split(',');
-            a.Add(playerInfo[0], gameData[1]);
+            remainingWords.Add(playerInfo[0], gameData[1]);
+            Double.TryParse(playerInfo[2], out double time);
+            timeLimits.Add(playerInfo[0], time);
 
             int count = 0;
 
@@ -131,11 +144,11 @@ namespace WordGuessingServer
                     continue;
                 }
 
-                correctWords[count] = gameData[i];
+                words[count] = gameData[i];
                 count++;
             }
 
-            b.Add(playerInfo[0], correctWords);
+            correctWords.Add(playerInfo[0], words);
 
             return data;
         }
