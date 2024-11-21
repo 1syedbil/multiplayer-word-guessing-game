@@ -1,4 +1,17 @@
-﻿using System;
+﻿/*
+* FILE          : Server.cs
+* PROJECT       : WindowsProg_A5
+* PROGRAMMER    : Bilal Syed
+* FIRST VERSION : 2024-11-14
+* DESCRIPTION   : This file contains the definition for the Server class, which is 
+*                 responsible for initializing and hosting a word guessing game client. 
+*                 On top of acting as the host, this class also performs all the game logic
+*                 on the server side. It listens for client connections, manages game sessions, 
+*                 and tracks player states. The server initializes game data, verifies player 
+*                 guesses, and enforces game logic such as time limits and word count tracking. 
+*/
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -65,8 +78,7 @@ namespace WordGuessingServer
 
             stream.Read(clientData, 0, clientData.Length);
 
-            playerMessage = Encoding.ASCII.GetString(clientData).Trim('\0'); ;
-            Console.WriteLine(playerMessage);
+            playerMessage = Encoding.ASCII.GetString(clientData).Trim('\0'); 
 
             playerInfo = playerMessage.Split(',');
 
@@ -100,12 +112,10 @@ namespace WordGuessingServer
                     ResetPlayer(playerInfo);
 
                     newGameData = "Game Restarted";
-                    Console.WriteLine(newGameData);
                 }
                 else if (statusOfGames[playerInfo[0]] == false)
                 {
                     newGameData = "Game Finished";
-                    Console.WriteLine(newGameData);
                 }
                 else
                 {
@@ -135,8 +145,6 @@ namespace WordGuessingServer
             int timeMilliseconds = (int)(timeMinutes * 60000);
 
             await Task.Delay(timeMilliseconds);
-
-            Console.WriteLine("Timer finished.");
 
             statusOfGames[playerInfo[0]] = false;
         }

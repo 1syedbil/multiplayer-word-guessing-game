@@ -1,4 +1,17 @@
-﻿using System;
+﻿/*
+* FILE          : MainWindow.xaml.cs
+* PROJECT       : WindowsProg_A5
+* PROGRAMMER    : Bilal Syed
+* FIRST VERSION : 2024-11-14
+* DESCRIPTION   : This file contains code for the implementation of the client-side functionality for my
+*                 word guessing game. The application communicates with a server to initiate and manage 
+*                 the game. The different events in this file trigger different client requests depending
+*                 on the user's input. Thes it performs appropriate actions based on the message received
+*                 from the server. For example, the server lets it know when the timer is finished so the
+*                 end game event based on the timer ending can be triggered.
+*/
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,9 +29,6 @@ using System.Windows.Threading;
 
 namespace WordGuessingClient
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         private string uniqueID = string.Empty;

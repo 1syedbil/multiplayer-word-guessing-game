@@ -1,4 +1,17 @@
-﻿using System;
+﻿/*
+* FILE          : Client.cs
+* PROJECT       : WindowsProg_A5
+* PROGRAMMER    : Bilal Syed
+* FIRST VERSION : 2024-11-14
+* DESCRIPTION   : This file contains the definition of the Client class, which is what's used
+*                 to send connection requests to the server as well as to receive messages sent 
+*                 back from the server. The file contains many different overloaded methods to 
+*                 request connections for different reasons. For example, there is one method to 
+*                 be used specifically for a game start request and another to be used for a game
+*                 restart request.
+*/
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
