@@ -120,6 +120,17 @@ namespace WordGuessingClient
                     wrLabel.Visibility = Visibility.Hidden;
                     wbLabel.Visibility = Visibility.Hidden;
                     submitGuessBtn.Visibility = Visibility.Hidden;
+                    playerName.Visibility = Visibility.Hidden;
+                    serverAddress.Visibility = Visibility.Hidden;
+                    serverPort.Visibility = Visibility.Hidden;
+
+                    tbName.Text = playerName.Text;
+                    tbAddress.Text = serverAddress.Text;
+                    tbPort.Text = serverPort.Text;
+
+                    tbName.Visibility = Visibility.Visible;
+                    tbAddress.Visibility = Visibility.Visible;
+                    tbPort.Visibility = Visibility.Visible;
                 }
             }
             else if (userChoice == MessageBoxResult.No)

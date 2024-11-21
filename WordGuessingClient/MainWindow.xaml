@@ -25,5 +25,8 @@
         <TextBlock x:Name="numOfWords" HorizontalAlignment="Left" Margin="564,344,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="58"/>
         <Label x:Name="rtLabel" Content="REMAINING TIME:" Visibility="Hidden" HorizontalAlignment="Left" Margin="453,29,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.074,0.131"/>
         <TextBlock x:Name="tbTime" HorizontalAlignment="Left" Margin="564,34,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="188"/>
+        <TextBlock x:Name="tbName" Visibility="Hidden" HorizontalAlignment="Left" Margin="180,60,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
+        <TextBlock x:Name="tbAddress" Visibility="Hidden" HorizontalAlignment="Left" Margin="180,91,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
+        <TextBlock x:Name="tbPort" Visibility="Hidden" HorizontalAlignment="Left" Margin="180,123,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
     </Grid>
 </Window>
