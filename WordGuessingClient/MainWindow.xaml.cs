@@ -43,6 +43,8 @@ namespace WordGuessingClient
             wordBank.Text = gameData[0];
             numOfWords.Text = gameData[1];
 
+            tbHint.FontWeight = FontWeights.Bold;
+
             StartTimer();
             submitBtn.Visibility = Visibility.Hidden;
             rtLabel.Visibility = Visibility.Visible;
@@ -50,6 +52,7 @@ namespace WordGuessingClient
             wrLabel.Visibility = Visibility.Visible;
             wbLabel.Visibility = Visibility.Visible;
             submitGuessBtn.Visibility = Visibility.Visible;
+            tbHint.Visibility = Visibility.Visible;
         }
 
         private void submitGuessBtn_Click(object sender, RoutedEventArgs e)
@@ -137,6 +140,7 @@ namespace WordGuessingClient
                     serverAddress.Visibility = Visibility.Hidden;
                     serverPort.Visibility = Visibility.Hidden;
                     tbAnswer.Visibility = Visibility.Hidden;
+                    tbHint.Visibility = Visibility.Hidden;
 
                     tbName.Text = playerName.Text;
                     tbAddress.Text = serverAddress.Text;
