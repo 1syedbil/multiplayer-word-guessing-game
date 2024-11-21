@@ -33,6 +33,34 @@ namespace WordGuessingClient
             return ConnectToGameServer(ip, serverPort, uniqueID);
         }
 
+        public string RequestRestart(string ip, string port, string uniqueID)
+        {
+            Int32.TryParse(port, out int serverPort);
+
+            return ConnectToGameServer(ip, serverPort, uniqueID, "Restart");
+        }
+
+        private string ConnectToGameServer(string ip, int port, string uniqueID, string request)
+        {
+            byte[] serverResponse = new byte[100];
+            byte[] userInfo = Encoding.ASCII.GetBytes(uniqueID + "," + request);
+
+            TcpClient player = new TcpClient(ip, port);
+
+            NetworkStream stream = player.GetStream();
+
+            stream.Write(userInfo, 0, userInfo.Length);
+
+            stream.Read(serverResponse, 0, serverResponse.Length);
+
+            string serverMessage = Encoding.ASCII.GetString(serverResponse).Trim('\0');
+
+            stream.Close();
+            player.Close();
+
+            return serverMessage;
+        }
+
         private string ConnectToGameServer(string ip, int port, string uniqueID)
         {
             try

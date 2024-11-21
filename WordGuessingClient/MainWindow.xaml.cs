@@ -33,7 +33,10 @@ namespace WordGuessingClient
 
         private void submitBtn_Click(object sender, RoutedEventArgs e)
         {
-            uniqueID = Guid.NewGuid().ToString();
+            if (uniqueID == string.Empty)
+            {
+                uniqueID = Guid.NewGuid().ToString();
+            }
 
             string[] gameData = client.RunGameClient(serverAddress.Text, serverPort.Text, playerName.Text, uniqueID, timeLimitValue.Text);
 
@@ -41,7 +44,12 @@ namespace WordGuessingClient
             numOfWords.Text = gameData[1];
 
             StartTimer();
-            submitBtn.Visibility = Visibility.Collapsed;
+            submitBtn.Visibility = Visibility.Hidden;
+            rtLabel.Visibility = Visibility.Visible;
+            userGuess.Visibility = Visibility.Visible;
+            wrLabel.Visibility = Visibility.Visible;
+            wbLabel.Visibility = Visibility.Visible;
+            submitGuessBtn.Visibility = Visibility.Visible;
         }
 
         private void submitGuessBtn_Click(object sender, RoutedEventArgs e)
@@ -50,7 +58,9 @@ namespace WordGuessingClient
 
             if (gameData == "Game Finished")
             {
-                MessageBox.Show("Game Finished. You won!");
+                timer.Stop();
+                MessageBoxResult userChoice = MessageBox.Show("Game Finished. You won!", "Game Finished", MessageBoxButton.YesNo);
+                GameRestartChoice(userChoice);
                 return;
             }
             
@@ -75,15 +85,47 @@ namespace WordGuessingClient
                      if (time == TimeSpan.Zero) 
                      { 
                          timer.Stop();
+                         //this if-statement is my own code
                          if (client.RequestTimerStatus(serverAddress.Text, serverPort.Text, uniqueID) == "Game Finished")
                          {
-                             MessageBox.Show("Game Finished. Time's up!");
+                             MessageBoxResult userChoice = MessageBox.Show("Game Finished. Time's up!", "Game Finished", MessageBoxButton.YesNo);
+                             GameRestartChoice(userChoice);
                          }
                      }
                     time = time.Add(TimeSpan.FromSeconds(-1));
                  }, Application.Current.Dispatcher);
 
             timer.Start();
+        }
+
+        private void GameRestartChoice(MessageBoxResult userChoice)
+        {
+            if (userChoice == MessageBoxResult.Yes)
+            {
+                string message = client.RequestRestart(serverAddress.Text, serverPort.Text, uniqueID);
+
+                if (message == "Game Restarted")
+                {
+                    timer.Stop();
+
+                    wordBank.Text = string.Empty;
+                    numOfWords.Text = string.Empty;
+                    tbTime.Text = string.Empty;
+                    userGuess.Text = string.Empty;
+                    timeLimit.Value = 0;
+
+                    submitBtn.Visibility = Visibility.Visible;
+                    rtLabel.Visibility = Visibility.Hidden;
+                    userGuess.Visibility = Visibility.Hidden;
+                    wrLabel.Visibility = Visibility.Hidden;
+                    wbLabel.Visibility = Visibility.Hidden;
+                    submitGuessBtn.Visibility = Visibility.Hidden;
+                }
+            }
+            else if (userChoice == MessageBoxResult.No)
+            {
+                Close();
+            }
         }
     }
 }

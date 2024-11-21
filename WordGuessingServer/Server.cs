@@ -8,6 +8,8 @@ using System.Net;
 using System.Net.Sockets;
 using System.Net.NetworkInformation;
 using System.IO;
+using System.Runtime.Remoting;
+using System.Diagnostics;
 
 namespace WordGuessingServer
 {
@@ -20,6 +22,7 @@ namespace WordGuessingServer
         private Dictionary<string, string[]> correctWords = new Dictionary<string, string[]>();
         private Dictionary<string, double> timeLimits = new Dictionary<string, double>();
         private Dictionary<string, bool> statusOfGames = new Dictionary<string, bool>();
+        private Dictionary<string, bool> gameRestarts = new Dictionary<string, bool>();
         private string[] gameData = new string[100];
 
         public void StartGameServer()
@@ -67,13 +70,18 @@ namespace WordGuessingServer
 
             playerInfo = playerMessage.Split(',');
 
-            if (CheckPlayerInfo(playerInfo) == 0)
+            int playerExists = CheckPlayerInfo(playerInfo);
+
+            if (playerExists == 0 || gameRestarts[playerInfo[0]])
             {
-                players.Add(playerInfo[0], playerInfo[1]);
+                if (playerExists == 0)
+                {
+                    players.Add(playerInfo[0], playerInfo[1]);
+                }
 
                 string gameData = string.Empty;
 
-                gameData = InitializeGame(gameData, playerInfo);
+                gameData = InitializeGame(gameData, playerInfo, playerExists);
 
                 Task countdown = Countdown(timeLimits[playerInfo[0]], playerInfo);
 
@@ -83,11 +91,18 @@ namespace WordGuessingServer
 
                 await countdown;
             }
-            else if (CheckPlayerInfo(playerInfo) == 1)
+            else if (playerExists == 1)
             {
                 string newGameData = string.Empty;
 
-                if (statusOfGames[playerInfo[0]] == false)
+                if (playerInfo.Length > 1 && playerInfo[1] == "Restart")
+                {
+                    ResetPlayer(playerInfo);
+
+                    newGameData = "Game Restarted";
+                    Console.WriteLine(newGameData);
+                }
+                else if (statusOfGames[playerInfo[0]] == false)
                 {
                     newGameData = "Game Finished";
                     Console.WriteLine(newGameData);
@@ -103,6 +118,16 @@ namespace WordGuessingServer
             }
 
             client.Close();
+        }
+
+        private void ResetPlayer(string[] playerInfo)
+        {
+            gameData = new string[100];
+            correctWords[playerInfo[0]] = new string[100];
+            statusOfGames[playerInfo[0]] = true;
+            timeLimits[playerInfo[0]] = 0;
+            remainingWords[playerInfo[0]] = string.Empty;
+            gameRestarts[playerInfo[0]] = true;
         }
 
         private async Task Countdown(double timeMinutes, string[] playerInfo)
@@ -147,15 +172,33 @@ namespace WordGuessingServer
             }
         }
 
-        private string InitializeGame(string data, string[] playerInfo)
+        private string InitializeGame(string data, string[] playerInfo, int playerExists)
         {
             string[] words = new string[100];
+
             data = InitializeGameData(data);
             gameData = data.Split(',');
-            remainingWords.Add(playerInfo[0], gameData[1]);
-            Double.TryParse(playerInfo[2], out double time);
-            timeLimits.Add(playerInfo[0], time);
-            statusOfGames.Add(playerInfo[0], true);
+
+            if (playerExists == 0)
+            {
+                remainingWords.Add(playerInfo[0], gameData[1]);
+
+                Double.TryParse(playerInfo[2], out double time);
+                timeLimits.Add(playerInfo[0], time);
+
+                statusOfGames.Add(playerInfo[0], true);
+                gameRestarts.Add(playerInfo[0], false);
+            }
+            else if (playerExists == 1)
+            {
+                remainingWords[playerInfo[0]] = gameData[1];
+
+                Double.TryParse(playerInfo[2], out double time);
+                timeLimits[playerInfo[0]] = time;
+
+                statusOfGames[playerInfo[0]] = true;
+                gameRestarts[playerInfo[0]] = false;
+            }
 
             int count = 0;
 
@@ -170,7 +213,14 @@ namespace WordGuessingServer
                 count++;
             }
 
-            correctWords.Add(playerInfo[0], words);
+            if (playerExists == 0)
+            {
+                correctWords.Add(playerInfo[0], words);
+            }
+            else if (playerExists == 1)
+            {
+                correctWords[playerInfo[0]] = words;
+            }
 
             return data;
         }
