@@ -227,7 +227,13 @@ namespace WordGuessingServer
 
         private string InitializeGameData(string gameData)
         {
-            string[] a = File.ReadAllLines("WordBanks/wordBank2.txt");
+            Random rand = new Random(); 
+
+            string[] files = Directory.GetFiles("WordBanks");
+
+            string file = files[rand.Next(files.Length)];
+
+            string[] a = File.ReadAllLines(file);
 
             foreach (string data in a)
             {

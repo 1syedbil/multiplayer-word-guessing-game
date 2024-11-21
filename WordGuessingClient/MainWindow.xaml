@@ -28,5 +28,6 @@
         <TextBlock x:Name="tbName" Visibility="Hidden" HorizontalAlignment="Left" Margin="180,60,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
         <TextBlock x:Name="tbAddress" Visibility="Hidden" HorizontalAlignment="Left" Margin="180,91,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
         <TextBlock x:Name="tbPort" Visibility="Hidden" HorizontalAlignment="Left" Margin="180,123,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
+        <TextBlock x:Name="tbAnswer" Visibility="Hidden" HorizontalAlignment="Left" Margin="544,316,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="78"/>
     </Grid>
 </Window>

@@ -64,7 +64,20 @@ namespace WordGuessingClient
                 return;
             }
             
+            if (gameData == numOfWords.Text)
+            {
+                tbAnswer.Foreground = new SolidColorBrush(Colors.Red);
+                tbAnswer.Text = "Wrong";
+            }
+            if (gameData != numOfWords.Text)
+            {
+                tbAnswer.Foreground = new SolidColorBrush(Colors.Green);
+                tbAnswer.Text = "Correct";
+            }
+
             numOfWords.Text = gameData;
+
+            tbAnswer.Visibility = Visibility.Visible;
         }
 
         private void timeLimit_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -123,6 +136,7 @@ namespace WordGuessingClient
                     playerName.Visibility = Visibility.Hidden;
                     serverAddress.Visibility = Visibility.Hidden;
                     serverPort.Visibility = Visibility.Hidden;
+                    tbAnswer.Visibility = Visibility.Hidden;
 
                     tbName.Text = playerName.Text;
                     tbAddress.Text = serverAddress.Text;
