@@ -59,7 +59,7 @@ namespace WordGuessingClient
             if (gameData == "Game Finished")
             {
                 timer.Stop();
-                MessageBoxResult userChoice = MessageBox.Show("Game Finished. You won!", "Game Finished", MessageBoxButton.YesNo);
+                MessageBoxResult userChoice = MessageBox.Show("You won! Would you like to play again?", "Game Finished", MessageBoxButton.YesNo);
                 GameRestartChoice(userChoice);
                 return;
             }
@@ -88,7 +88,7 @@ namespace WordGuessingClient
                          //this if-statement is my own code
                          if (client.RequestTimerStatus(serverAddress.Text, serverPort.Text, uniqueID) == "Game Finished")
                          {
-                             MessageBoxResult userChoice = MessageBox.Show("Game Finished. Time's up!", "Game Finished", MessageBoxButton.YesNo);
+                             MessageBoxResult userChoice = MessageBox.Show("Time's up! Would you like to play again?", "Game Finished", MessageBoxButton.YesNo);
                              GameRestartChoice(userChoice);
                          }
                      }
