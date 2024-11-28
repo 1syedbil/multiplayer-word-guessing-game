@@ -55,23 +55,34 @@ namespace WordGuessingClient
 
         private string ConnectToGameServer(string ip, int port, string uniqueID, string request)
         {
-            byte[] serverResponse = new byte[100];
-            byte[] userInfo = Encoding.ASCII.GetBytes(uniqueID + "," + request);
+            try
+            {
+                byte[] serverResponse = new byte[100];
+                byte[] userInfo = Encoding.ASCII.GetBytes(uniqueID + "," + request);
 
-            TcpClient player = new TcpClient(ip, port);
+                TcpClient player = new TcpClient(ip, port);
 
-            NetworkStream stream = player.GetStream();
+                NetworkStream stream = player.GetStream();
 
-            stream.Write(userInfo, 0, userInfo.Length);
+                stream.Write(userInfo, 0, userInfo.Length);
 
-            stream.Read(serverResponse, 0, serverResponse.Length);
+                stream.Read(serverResponse, 0, serverResponse.Length);
 
-            string serverMessage = Encoding.ASCII.GetString(serverResponse).Trim('\0');
+                string serverMessage = Encoding.ASCII.GetString(serverResponse).Trim('\0');
 
-            stream.Close();
-            player.Close();
+                stream.Close();
+                player.Close();
 
-            return serverMessage;
+                return serverMessage;
+            }
+            catch (ArgumentNullException)
+            {
+                return null;
+            }
+            catch (SocketException)
+            {
+                return "Server Stopped";
+            }
         }
 
         private string ConnectToGameServer(string ip, int port, string uniqueID)
@@ -96,15 +107,13 @@ namespace WordGuessingClient
 
                 return serverMessage;
             }
-            catch (ArgumentNullException e)
+            catch (ArgumentNullException)
             {
-                Console.WriteLine(e.Message);
                 return null;
             }
-            catch (SocketException e)
+            catch (SocketException)
             {
-                Console.WriteLine(e.Message);
-                return null;
+                return "Server Stopped";
             }
         }
 
@@ -133,15 +142,13 @@ namespace WordGuessingClient
 
                 return serverMessage;
             }
-            catch (ArgumentNullException e)
+            catch (ArgumentNullException)
             {
-                Console.WriteLine(e.Message);
                 return null;
             }
-            catch (SocketException e)
+            catch (SocketException)
             {
-                Console.WriteLine(e.Message);
-                return null;
+                return "Server Stopped";
             }
         }
 
@@ -172,15 +179,14 @@ namespace WordGuessingClient
 
                 return gameInfo;
             }
-            catch (ArgumentNullException e)
+            catch (ArgumentNullException)
             {
-                Console.WriteLine(e.Message);
                 return null;
             }
-            catch (SocketException e)
+            catch (SocketException)
             {
-                Console.WriteLine(e.Message);
-                return null;
+                string[] serverStop = { "Server Stopped" };
+                return serverStop;
             }
         }
 

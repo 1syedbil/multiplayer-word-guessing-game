@@ -50,6 +50,12 @@ namespace WordGuessingClient
 
             string[] gameData = client.RunGameClient(serverAddress.Text, serverPort.Text, playerName.Text, uniqueID, timeLimitValue.Text);
 
+            if (gameData[0] == "Server Stopped")
+            {
+                MessageBox.Show("The server is stopped or can't be found. The game will close once you leave this window.", "Server Stopped or Not Found");
+                Close();
+            }
+
             wordBank.Text = gameData[0];
             numOfWords.Text = gameData[1];
 
@@ -75,6 +81,12 @@ namespace WordGuessingClient
                 MessageBoxResult userChoice = MessageBox.Show("You won! Would you like to play again?", "Game Finished", MessageBoxButton.YesNo);
                 GameRestartChoice(userChoice);
                 return;
+            }
+            else if (gameData == "Server Stopped")
+            {
+                timer.Stop();
+                MessageBox.Show("The server is stopped or can't be found. The game will close once you leave this window.", "Server Stopped or Not Found");
+                Close();
             }
             
             if (gameData == numOfWords.Text)
@@ -116,6 +128,11 @@ namespace WordGuessingClient
                          {
                              MessageBoxResult userChoice = MessageBox.Show("Time's up! Would you like to play again?", "Game Finished", MessageBoxButton.YesNo);
                              GameRestartChoice(userChoice);
+                         }
+                         else if (client.RequestTimerStatus(serverAddress.Text, serverPort.Text, uniqueID) == "Server Stopped")
+                         {
+                             MessageBox.Show("The server is stopped or can't be found. The game will close once you leave this window.", "Server Stopped or Not Found");
+                             Close();
                          }
                      }
                     time = time.Add(TimeSpan.FromSeconds(-1));
